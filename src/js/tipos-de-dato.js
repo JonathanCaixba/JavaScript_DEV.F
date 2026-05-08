@@ -6,7 +6,7 @@ console.log(typeof true);          // boolean
 console.log(typeof 0);             // number
 console.log(typeof '');            // string
 console.log(typeof null);          // object (esto es un bug histórico en JS)
-console.log(typeof undefined);     // undefined
+console.log(typeof undefined);     // undefined 
 console.log(typeof false);         // boolean
 
 // Ejemplos adicionales por Caixba
@@ -15,7 +15,7 @@ console.log(typeof NaN);           // number
 console.log(typeof Infinity);      // number
 
 console.log(typeof {});            // object
-console.log(typeof []);            // object
+console.log(typeof []);            // objectcod
 console.log(typeof [1, 2, 3]);     // object
 
 console.log(typeof function(){});  // function
