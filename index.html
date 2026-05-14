@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/styles/styles.css">
+    <title>Caja de Comentarios</title>
+</head>
+<body>
+
+    <h1>Caja de Comentarios</h1>
+
+    <!-- Formulario -->
+    <textarea id="comentarioInput" placeholder="Escribe un comentario..."></textarea>
+    <br>
+    <button onclick="agregarComentario()">Agregar Comentario</button>
+
+    <!-- Lista de comentarios -->
+    <div id="listaComentarios"></div>
+
+    <script>
+        function agregarComentario() {
+            let input = document.getElementById("comentarioInput");
+            let texto = input.value.trim();
+
+            // Validar que no esté vacío
+            if (texto === "") {
+                alert("Por favor escribe un comentario.");
+                return;
+            }
+
+            // Crear contenedor del comentario
+            let comentarioDiv = document.createElement("div");
+            comentarioDiv.classList.add("comentario");
+
+            // Fecha y hora actual
+            let fecha = new Date().toLocaleString();
+
+            // Contenido del comentario
+            comentarioDiv.innerHTML = `
+                <p>${texto}</p>
+                <p class="fecha">Publicado: ${fecha}</p>
+                <button class="eliminar">Eliminar</button>
+            `;
+
+            // Botón eliminar
+            let botonEliminar = comentarioDiv.querySelector(".eliminar");
+
+            botonEliminar.addEventListener("click", function() {
+                comentarioDiv.remove();
+            });
+
+            document.getElementById("listaComentarios")
+                .appendChild(comentarioDiv);
+
+            input.value = "";
+        }
+    </script>
+
+</body>
+</html>
