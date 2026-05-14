@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Libros y Comentarios</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#f4f4f4;
+      padding:40px;
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:40px;
+      color:#333;
+    }
+
+    .contenedor-libros{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:25px;
+    }
+
+    .libro{
+      background:white;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 5px 15px rgba(0,0,0,0.1);
+      transition:0.3s;
+    }
+
+    .libro:hover{
+      transform:translateY(-5px);
+    }
+
+    .libro img{
+      width:100%;
+      height:350px;
+      object-fit:cover;
+    }
+
+    .contenido{
+      padding:20px;
+    }
+
+    .contenido h2{
+      margin-bottom:10px;
+      color:#222;
+    }
+
+    .contenido p{
+      color:#555;
+      margin-bottom:10px;
+    }
+
+    .comentarios-count{
+      margin-top:10px;
+      font-weight:bold;
+      color:#007bff;
+    }
+
+    .btn{
+      width:100%;
+      padding:12px;
+      border:none;
+      background:#007bff;
+      color:white;
+      font-size:16px;
+      border-radius:8px;
+      cursor:pointer;
+      margin-top:15px;
+      transition:0.3s;
+    }
+
+    .btn:hover{
+      background:#0056b3;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.7);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+    }
+
+    .modal-content{
+      background:white;
+      width:100%;
+      max-width:600px;
+      border-radius:12px;
+      padding:25px;
+      max-height:90vh;
+      overflow-y:auto;
+    }
+
+    .cerrar{
+      float:right;
+      font-size:28px;
+      cursor:pointer;
+      color:red;
+    }
+
+    textarea{
+      width:100%;
+      height:100px;
+      margin-top:15px;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      resize:none;
+    }
+
+    .comentario{
+      background:#f9f9f9;
+      border-left:5px solid #007bff;
+      padding:12px;
+      border-radius:8px;
+      margin-top:15px;
+    }
+
+    .fecha{
+      font-size:12px;
+      color:gray;
+      margin-top:8px;
+    }
+
+    .eliminar{
+      background:red;
+      color:white;
+      border:none;
+      padding:8px 12px;
+      border-radius:6px;
+      margin-top:10px;
+      cursor:pointer;
+    }
+
+    .eliminar:hover{
+      background:darkred;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Libros de Gabriel García Márquez</h1>
+
+  <div class="contenedor-libros">
+
+    <!-- Libro 1 -->
+    <div class="libro">
+      <img src="./src/imgs/cienaños.jpg">
+
+      <div class="contenido">
+        <h2>Cien Años de Soledad</h2>
+
+        <p>
+          Una de las obras más importantes de la literatura latinoamericana.
+        </p>
+
+        <p class="comentarios-count">
+          Comentarios: <span id="count-0">0</span>
+        </p>
+
+        <button class="btn" onclick="abrirModal(0)">
+          Ver Comentarios
+        </button>
+      </div>
+    </div>
+
+    <!-- Libro 2 -->
+    <div class="libro">
+      <img src="./src/imgs/amorcolera.jpg">
+
+      <div class="contenido">
+        <h2>El Amor en los Tiempos del Cólera</h2>
+
+        <p>
+          Una historia de amor que atraviesa décadas y emociones profundas.
+        </p>
+
+        <p class="comentarios-count">
+          Comentarios: <span id="count-1">0</span>
+        </p>
+
+        <button class="btn" onclick="abrirModal(1)">
+          Ver Comentarios
+        </button>
+      </div>
+    </div>
+
+    <!-- Libro 3 -->
+    <div class="libro">
+      <img src="./src/imgs/cronicamuerte.jpg">
+
+      <div class="contenido">
+        <h2>Crónica de una Muerte Anunciada</h2>
+
+        <p>
+          Una novela corta llena de misterio y tensión narrativa.
+        </p>
+
+        <p class="comentarios-count">
+          Comentarios: <span id="count-2">0</span>
+        </p>
+
+        <button class="btn" onclick="abrirModal(2)">
+          Ver Comentarios
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+
+    <div class="modal-content">
+
+      <span class="cerrar" onclick="cerrarModal()">
+        &times;
+      </span>
+
+      <h2 id="tituloLibro"></h2>
+
+      <textarea 
+        id="comentarioInput"
+        placeholder="Escribe un comentario..."
+      ></textarea>
+
+      <button class="btn" onclick="agregarComentario()">
+        Agregar Comentario
+      </button>
+
+      <div id="listaComentarios"></div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const libros = [
+      {
+        titulo:"Cien Años de Soledad",
+        comentarios:[]
+      },
+      {
+        titulo:"El Amor en los Tiempos del Cólera",
+        comentarios:[]
+      },
+      {
+        titulo:"Crónica de una Muerte Anunciada",
+        comentarios:[]
+      }
+    ];
+
+    let libroActual = 0;
+
+    const modal = document.getElementById("modal");
+    const tituloLibro = document.getElementById("tituloLibro");
+    const listaComentarios = document.getElementById("listaComentarios");
+    const comentarioInput = document.getElementById("comentarioInput");
+
+    // Abrir modal
+    function abrirModal(index){
+
+      libroActual = index;
+
+      modal.style.display = "flex";
+
+      tituloLibro.textContent = libros[index].titulo;
+
+      mostrarComentarios();
+    }
+
+    // Cerrar modal
+    function cerrarModal(){
+      modal.style.display = "none";
+    }
+
+    // Mostrar comentarios
+    function mostrarComentarios(){
+
+      listaComentarios.innerHTML = "";
+
+      libros[libroActual].comentarios.forEach((comentario,index)=>{
+
+        const comentarioDiv = document.createElement("div");
+
+        comentarioDiv.classList.add("comentario");
+
+        comentarioDiv.innerHTML = `
+          <p>${comentario.texto}</p>
+
+          <p class="fecha">
+            ${comentario.fecha}
+          </p>
+
+          <button class="eliminar" onclick="eliminarComentario(${index})">
+            Eliminar
+          </button>
+        `;
+
+        listaComentarios.appendChild(comentarioDiv);
+
+      });
+
+      actualizarContador();
+    }
+
+    // Agregar comentario
+    function agregarComentario(){
+
+      const texto = comentarioInput.value.trim();
+
+      if(texto === ""){
+        alert("Escribe un comentario");
+        return;
+      }
+
+      const nuevoComentario = {
+        texto:texto,
+        fecha:new Date().toLocaleString()
+      };
+
+      libros[libroActual].comentarios.push(nuevoComentario);
+
+      comentarioInput.value = "";
+
+      mostrarComentarios();
+    }
+
+    // Eliminar comentario
+    function eliminarComentario(index){
+
+      libros[libroActual].comentarios.splice(index,1);
+
+      mostrarComentarios();
+    }
+
+    // Actualizar contador
+    function actualizarContador(){
+
+      libros.forEach((libro,index)=>{
+
+        document.getElementById(`count-${index}`).textContent =
+          libro.comentarios.length;
+
+      });
+
+    }
+
+  </script>
+
+</body>
+</html>
